@@ -1,4 +1,7 @@
-#!/usr/bin/python3def showInstructions():
+#!/usr/bin/env python3
+
+import requests
+
 """Show the game instructions when called"""
 def showInstructions():
     """Show the game instructions when called"""
@@ -19,7 +22,13 @@ def showStatus():
     print("---------------------------")
 inventory = []
 
+# sphinx API logic
+APIURL = "https://catfact.ninja/fact"
 
+def allKnowingSphinx():
+    fact = requests.get(f"{APIURL}")
+    fact = fact.json()
+    print(fact['fact'])
 
 
 riddle_questions = {
@@ -71,13 +80,17 @@ def riddles():
 rooms = {
 
     'Hall': {
-        'south': 'Kitchen',
+        'south': 'Sphinx Room',
         'east': 'Dining Room',
         'item': 'key'
-    },
-
-    'Kitchen': {
+    },    
+    'Sphinx Room': {
         'north': 'Hall',
+        'south': 'Kitchen',
+        'item': 'encyclopedia'
+    },
+    'Kitchen': {
+        'north': 'Sphinx Room',
         'item': 'monster',
     },
     'Dining Room': {
@@ -125,6 +138,11 @@ while True:
     if currentRoom == 'Riddle Room':
         print("Haha, you thought you can move around easily like that? You must successfully solve 3 random questions to move north or south! Good luck!")
         riddles()
+    
+    if currentRoom == 'Sphinx Room':
+        print("Hello explorer! It is I— the All-knowing Sphinx!\n")
+        print("Here is a cat fact for your travels: ")
+        allKnowingSphinx()
 
     if 'item' in rooms[currentRoom] and 'monster' in rooms[currentRoom]['item']:
         print('A monster has got you ... GAME OVER!')
