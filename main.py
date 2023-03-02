@@ -21,43 +21,49 @@ inventory = []
 
 
 
+
 riddle_questions = {
-    "Who created Python?: ": "D",
-    "What year was the Python born?: ": "B",
-    "What statement/function does Python uses to display messages onto the screen?: ": "C",
-}
-
-options = [["A. Jeff Bezos", "B. Elon Musk", "C. Bill Gates", "D. Guido van Rossum"],
-           ["A. 1988", "B. 1991", "C. 2002", "D. 2010"],
-           ["A. console.log()", "B. System.out.println()", "C. print()", "D. println()"]]
-
+    "Who created Python?: ": 
+        {
+        "choices": "A. Jeff Bezos, B. Elon Musk, C. Bill Gates, D. Guido van Rossum",
+        "answer" : "D"
+        },
+    "What year was the Python born?: ":
+        {
+        "choices": "A. 1988, B. 1991, C. 2002, D. 2010",
+        "answer" : "B"
+        },
+    "What statement/function does Python uses to display messages onto the screen?:": {
+        "choices": "A. console.log(), B. System.out.println(), C. print(), D. println()",
+        "answer" : "C"
+    }
+    }
 
 def riddles():
 
     correct_guesses = 0
-    question_num = 1
-    for key, value in riddle_questions.items():
-        print("***********************************************************")
-        print(key)
 
-        for i in options[question_num-1]:
-            print(i)
+    for index, (key, value) in enumerate(riddle_questions.items()):
+
+        print(f"***********************************************************\n{key}")
+        print(value.get("choices"))
+
         guess = input("Select answers & type (A, B, C, or D): ")
         guess = guess.upper()
 
-        if guess == value:
+        if guess == value.get("answer"):
             correct_guesses += 1
             print(f"you got it! So far you correctly guessed: {correct_guesses}")            
         else:
             correct_guesses -= 1
             print(f"WRONG! Deducting your score. So far you correctly guessed: {correct_guesses}")
-    
-        question_num += 1
+
     if correct_guesses >= 3:
         print("Good job, you guessed all 3 answers correctly. You can get the item and go north or south now.")
     else:
-        print(f"You got {correct_guesses} numbers of questions wrong! Let's try again")
+        print(f"\nWell, you exhuasted all my questions prepared! Let's try again!")
         riddles()
+    
 
 
 
