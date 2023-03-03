@@ -2,6 +2,7 @@
 
 import requests
 import time
+from random import randint
 
 """Show the game instructions when called"""
 def showInstructions():
@@ -71,12 +72,48 @@ def riddles():
             print(f"WRONG! Deducting your score. So far you correctly guessed: {correct_guesses} correctly.")
 
     if correct_guesses >= 3:
-        print(f"Good job, you guessed all 3 answers correctly. You can get the {rooms[currentRoom]['item']} and go north or south now.")
+        print("Good job, you guessed all 3 answers correctly. You have earned an item: '`star`'. You can go south now.")
+        inventory.append("star")
     else:
-        print("Well, you exhuasted all my prepared questions! Let's try again!")
-        riddles()
-    
+        print("*********** GAME OVER! *********** \nYou didn't make it! Restart the program to start over!")
+        quit()
+        
+def game():
 
+    choices = ["rock", "paper", "scissors"]
+    computer = choices[randint(0,2)]
+    win_count=0
+
+    while True:
+        if win_count > 0:
+            break
+        player = input("Let's play a game with a computer! Please input Rock, Paper or Scissors. \n>>> ")
+        player = player.lower()
+
+        if player == computer:
+            print("Tie!")
+        elif player == "rock":
+            if computer == "paper":
+                print(f"You lose! {computer} covers {player}")
+            else:
+                print(f"You win! {player} smashes {computer}! You can move again now!")
+                win_count+=1
+        elif player == "paper":
+            if computer == "scissors":
+                print(f"You lose! {computer} cut {player}")
+            else:
+                print(f"You win! {player} covers {computer}! You can move again now!")
+                win_count+=1
+        elif player == "scissors":
+            if computer == "rock":
+                print(f"You lose! {computer} smashes {player}")
+            else:
+                print(f"You win! {player} cut {computer}")
+                win_count+=1
+        else:
+            print("Something went wrong. Try check your spelling!")
+
+        computer = choices[randint(0,2)]
 
 def roomItems():
     if currentRoom == 'Hall':
@@ -86,10 +123,6 @@ def roomItems():
     if currentRoom == 'Sphinx Room':
         print("Hello explorer! It is I— the All-knowing Sphinx!")
         print(f"If you grab the {rooms[currentRoom]['item']}, there's sure to be something that will CAT-ch your eye!")
-    if currentRoom == 'Riddle Room':
-        time.sleep(1)
-        print(f"Haha, you thought you could move around easily like that?\nYou must successfully solve 3 random questions to obatin the {rooms[currentRoom]['item']}\nand move north or south! Good luck!")
-        riddles()
 
     
 
@@ -97,19 +130,17 @@ def roomItems():
 rooms = {
 
     'Hall': {
-        'south': 'Sphinx Room',
+        'south': 'Kitchen',
         'east': 'Dining Room',
         'item': 'key'
     },    
     'Sphinx Room': {
-        'north': 'Hall',
-        'south': 'Kitchen',
+        'north': 'Kitchen',
         'item': 'encyclopedia'
     },
     'Kitchen': {
-        'north': 'Sphinx Room',
-        'east' : 'Garden',
-        'item': 'monster',
+        'south': 'Sphinx Room',
+        'north': 'Hall'
     },
     'Dining Room': {
         'west': 'Hall',
@@ -118,13 +149,13 @@ rooms = {
     },
     'Riddle Room': {
         'north': 'Dining Room',
-        'item': 'star',
         'south': 'Garden'
     },
     'Garden': {
         'north': 'Riddle Room'
     }
 }
+
 
 
 currentRoom = 'Hall'
@@ -141,7 +172,7 @@ while True:
 
     if move[0] == 'go':
         if move[1] in rooms[currentRoom]:
-            if "key" not in inventory and move[1] == "east" or move[1] == "south":
+            if "key" not in inventory and (move[1] == "east" or move[1] == "south"):
                 print("You need a key to unlock this room.")
             else:
                 currentRoom = rooms[currentRoom][move[1]]             
@@ -159,11 +190,16 @@ while True:
         else:
              print('You already have a ' + move[1] + '!')
        
-
-    if 'item' in rooms[currentRoom] and 'monster' in rooms[currentRoom]['item']:
-        print('A monster has got you ... GAME OVER!')
-        break
+    if currentRoom == 'Kitchen':
+        game()
+        
+    if currentRoom == 'Riddle Room':
+        print("Haha, you thought you can move around easily like that? You must successfully solve 3 random questions to move north or south! Good luck!")
+        riddles()
 
     if currentRoom == 'Garden' and 'key' in inventory and 'potion' in inventory:
         print('You escaped the house with the ultra rare key and magic potion... YOU WIN!')
         break
+
+
+
