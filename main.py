@@ -60,20 +60,20 @@ def riddles():
         print(f"***********************************************************\n{key}")
         print(value.get("choices"))
 
-        guess = input("Select answers & type (A, B, C, or D): ")
+        guess = input("Select an answer: (A, B, C, or D): ")
         guess = guess.upper()
 
         if guess == value.get("answer"):
             correct_guesses += 1
-            print(f"you got it! So far you correctly guessed: {correct_guesses}")            
+            print(f"You got it! So far you correctly guessed: {correct_guesses} correctly.")            
         else:
             correct_guesses -= 1
-            print(f"WRONG! Deducting your score. So far you correctly guessed: {correct_guesses}")
+            print(f"WRONG! Deducting your score. So far you correctly guessed: {correct_guesses} correctly.")
 
     if correct_guesses >= 3:
         print(f"Good job, you guessed all 3 answers correctly. You can get the {rooms[currentRoom]['item']} and go north or south now.")
     else:
-        print(f"\nWell, you exhuasted all my questions prepared! Let's try again!")
+        print("Well, you exhuasted all my prepared questions! Let's try again!")
         riddles()
     
 
