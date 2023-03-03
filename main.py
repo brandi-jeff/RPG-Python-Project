@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import requests
+import time
 
 """Show the game instructions when called"""
 def showInstructions():
@@ -15,10 +16,11 @@ def showInstructions():
 
 def showStatus():
     print('---------------------------')
-    print('You are in the ' + currentRoom)
+    print('You are in the ' + currentRoom + '.')
     print('Inventory:', inventory)
     if "item" in rooms[currentRoom]:
-      print('You see a ' + rooms[currentRoom]['item'])
+      print('You see a ' + rooms[currentRoom]['item'] + '.')
+      roomItems() 
     print("---------------------------")
 inventory = []
 
@@ -29,6 +31,7 @@ def allKnowingSphinx():
     fact = requests.get(f"{APIURL}")
     fact = fact.json()
     print(fact['fact'])
+    time.sleep(1)
 
 
 riddle_questions = {
@@ -68,13 +71,27 @@ def riddles():
             print(f"WRONG! Deducting your score. So far you correctly guessed: {correct_guesses}")
 
     if correct_guesses >= 3:
-        print("Good job, you guessed all 3 answers correctly. You can get the item and go north or south now.")
+        print(f"Good job, you guessed all 3 answers correctly. You can get the {rooms[currentRoom]['item']} and go north or south now.")
     else:
         print(f"\nWell, you exhuasted all my questions prepared! Let's try again!")
         riddles()
     
 
 
+def roomItems():
+    if currentRoom == 'Hall':
+        print(f"A {rooms[currentRoom]['item']} could be useful to move on.")
+    if currentRoom == 'Dining Room':
+        print(f"Grabbing this magic {rooms[currentRoom]['item']} may come in handy in the future. Use it wisely.")
+    if currentRoom == 'Sphinx Room':
+        print("Hello explorer! It is I— the All-knowing Sphinx!")
+        print(f"If you grab the {rooms[currentRoom]['item']}, there's sure to be something that will CAT-ch your eye!")
+    if currentRoom == 'Riddle Room':
+        time.sleep(1)
+        print(f"Haha, you thought you could move around easily like that?\nYou must successfully solve 3 random questions to obatin the {rooms[currentRoom]['item']}\nand move north or south! Good luck!")
+        riddles()
+
+    
 
 
 rooms = {
@@ -91,6 +108,7 @@ rooms = {
     },
     'Kitchen': {
         'north': 'Sphinx Room',
+        'east' : 'Garden',
         'item': 'monster',
     },
     'Dining Room': {
@@ -123,26 +141,24 @@ while True:
 
     if move[0] == 'go':
         if move[1] in rooms[currentRoom]:
-            currentRoom = rooms[currentRoom][move[1]]
+            if "key" not in inventory and move[1] == "east" or move[1] == "south":
+                print("You need a key to unlock this room.")
+            else:
+                currentRoom = rooms[currentRoom][move[1]]             
         else:
-            print('You can\'t go that way!')
+            print("You can't go that way!")
 
     if move[0] == 'get' :
         if "item" in rooms[currentRoom] and move[1] in rooms[currentRoom]['item']:
             inventory.append(move[1])
-            print(move[1] + ' got!')
+            print(f'You picked up a {move[1]}.')
             del rooms[currentRoom]['item']
+            if currentRoom == 'Sphinx Room':
+                time.sleep(1)
+                allKnowingSphinx()
         else:
-             print('Can\'t get ' + move[1] + '!')
-
-    if currentRoom == 'Riddle Room':
-        print("Haha, you thought you can move around easily like that? You must successfully solve 3 random questions to move north or south! Good luck!")
-        riddles()
-    
-    if currentRoom == 'Sphinx Room':
-        print("Hello explorer! It is I— the All-knowing Sphinx!\n")
-        print("Here is a cat fact for your travels: ")
-        allKnowingSphinx()
+             print('You already have a ' + move[1] + '!')
+       
 
     if 'item' in rooms[currentRoom] and 'monster' in rooms[currentRoom]['item']:
         print('A monster has got you ... GAME OVER!')
