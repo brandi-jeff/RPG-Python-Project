@@ -132,11 +132,6 @@ def roomItems():
         print(f"Haha, you thought you could move around easily like that?\nYou must successfully solve 3 random questions to obatin the {rooms[currentRoom]['item']}\nand move north or south! Good luck!")
         riddles()
 
-    
-    
-
-    
-
 
 rooms = {
 
@@ -160,13 +155,13 @@ rooms = {
     },
     'Riddle Room': {
         'north': 'Dining Room',
-        'item': 'star',
         'south': 'Garden'
     },
     'Garden': {
         'north': 'Riddle Room'
     }
 }
+
 
 
 currentRoom = 'Hall'
@@ -204,9 +199,10 @@ while True:
     if currentRoom == 'Kitchen':
         game()   
 
+
     if currentRoom == 'Garden' and 'key' in inventory and 'potion' in inventory:
         print('You escaped the house with the ultra rare key and magic potion... YOU WIN!')
         break
     elif currentRoom == 'Garden' and 'potion' not in inventory:
         print('You missed an essential item. Go back through the house to find it.')
-        
+
