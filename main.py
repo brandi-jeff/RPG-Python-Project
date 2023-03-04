@@ -72,12 +72,16 @@ def riddles():
             print(f"WRONG! Deducting your score. So far you correctly guessed: {correct_guesses} correctly.")
 
     if correct_guesses >= 3:
-        print("Good job, you guessed all 3 answers correctly. You have earned an item: '`star`'. You can go south now.")
-        inventory.append("star")
+        print(f"Good job, you guessed all 3 answers correctly. You have earned the {rooms[currentRoom]['item']}. You can choose to go North or South.")
+        if 'star' not in inventory:
+            inventory.append("star")
+            del rooms[currentRoom]['item']
+
     else:
-        print("*********** GAME OVER! *********** \nYou didn't make it! Restart the program to start over!")
+        print("*********** GAME OVER! *********** \nYou didn't answer all three questions correctly! Restart the program to start over!")
         quit()
-        
+    
+
 def game():
 
     choices = ["rock", "paper", "scissors"]
@@ -123,8 +127,10 @@ def roomItems():
     if currentRoom == 'Sphinx Room':
         print("Hello explorer! It is I— the All-knowing Sphinx!")
         print(f"If you grab the {rooms[currentRoom]['item']}, there's sure to be something that will CAT-ch your eye!")
-
-    
+    if currentRoom == 'Riddle Room' and 'star' not in inventory:
+        time.sleep(1)
+        print(f"Haha, you thought you could move around easily like that?\nYou must successfully solve 3 random questions to obatin the {rooms[currentRoom]['item']}\nand move north or south! Good luck!")
+        riddles()
 
 
 rooms = {
@@ -139,8 +145,8 @@ rooms = {
         'item': 'encyclopedia'
     },
     'Kitchen': {
-        'south': 'Sphinx Room',
-        'north': 'Hall'
+        'north': 'Hall',
+        'south' : 'Sphinx Room',
     },
     'Dining Room': {
         'west': 'Hall',
@@ -191,15 +197,12 @@ while True:
              print('You already have a ' + move[1] + '!')
        
     if currentRoom == 'Kitchen':
-        game()
-        
-    if currentRoom == 'Riddle Room':
-        print("Haha, you thought you can move around easily like that? You must successfully solve 3 random questions to move north or south! Good luck!")
-        riddles()
+        game()   
+
 
     if currentRoom == 'Garden' and 'key' in inventory and 'potion' in inventory:
         print('You escaped the house with the ultra rare key and magic potion... YOU WIN!')
         break
-
-
+    elif currentRoom == 'Garden' and 'potion' not in inventory:
+        print('You missed an essential item. Go back through the house to find it.')
 
